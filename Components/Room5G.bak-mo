@@ -1,0 +1,72 @@
+within INP.Components;
+
+model Room5G "Indoor air virtual volume with 2D particle dispersion and one source"
+  parameter Modelica.Units.SI.Volume V "Volum of the virtual space";
+  parameter Units.NonSI.ParticleConductance Qa "Constant particle conductance of a space";
+  parameter Units.NonSI.ParticleConductance Qb "Constant particle conductance of a space";
+  parameter Units.NonSI.ParticleConductance Qc "Constant particle conductance of a space";
+  parameter Units.NonSI.ParticleConductance Qd "Constant particle conductance of a space";
+  parameter Units.NonSI.ParticleConductance Qe "Constant particle conductance of a space";
+  parameter Real S "Source's emission factor";
+  Components.ParticleCapacitor particleCapacitor(V = V) annotation(
+    Placement(visible = true, transformation(origin = {-42, 36}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  Components.ParticleConductor particleConductorA(Q = Qa) annotation(
+    Placement(visible = true, transformation(origin = {-62, 0}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  Components.ParticleConductor particleConductorB(Q = Qb) annotation(
+    Placement(visible = true, transformation(origin = {50, 0}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  Components.ParticleConductor particleConductorC(Q = Qc) annotation(
+    Placement(visible = true, transformation(origin = {-18, -58}, extent = {{-10, -10}, {10, 10}}, rotation = -90)));
+  ParticleConductor particleConductorD(Q = Qd) annotation(
+    Placement(visible = true, transformation(origin = {0, 62}, extent = {{-10, -10}, {10, 10}}, rotation = 90)));
+  Components.ParticleConductor particleConductorE(Q = Qe) annotation(
+    Placement(visible = true, transformation(origin = {24, -58}, extent = {{-10, -10}, {10, 10}}, rotation = -90)));
+  Interfaces.NPort_a port_a annotation(
+    Placement(visible = true, transformation(origin = {-98, 0}, extent = {{-10, -10}, {10, 10}}, rotation = 0), iconTransformation(origin = {-100, 0}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  Interfaces.NPort_b port_b annotation(
+    Placement(visible = true, transformation(origin = {100, 0}, extent = {{-10, -10}, {10, 10}}, rotation = 0), iconTransformation(origin = {100, 0}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  Interfaces.NPort_c port_c annotation(
+    Placement(visible = true, transformation(origin = {-60, -100}, extent = {{-10, -10}, {10, 10}}, rotation = 0), iconTransformation(origin = {-60, -100}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  Interfaces.NPort_d port_d annotation(
+    Placement(visible = true, transformation(origin = {0, 100}, extent = {{-10, -10}, {10, 10}}, rotation = 0), iconTransformation(origin = {0, 100}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  Interfaces.NPort_c port_e annotation(
+    Placement(visible = true, transformation(origin = {62, -98}, extent = {{-10, -10}, {10, 10}}, rotation = 0), iconTransformation(origin = {62, -100}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  PGNP.Sensors.NanoParticleCountingSensor concentrationSensor annotation(
+    Placement(visible = true, transformation(origin = {-22, -4}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  Modelica.Blocks.Sources.Constant const(k = S) annotation(
+    Placement(visible = true, transformation(origin = {-78, -36}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  Sources.PrescribedParticleFlow prescribedParticleFlow1 annotation(
+    Placement(visible = true, transformation(origin = {-42, -36}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+equation
+  connect(particleConductorA.port_a, port_a) annotation(
+    Line(points = {{-72, 0}, {-98, 0}}, color = {191, 0, 0}));
+  connect(particleConductorD.port_b, port_d) annotation(
+    Line(points = {{0, 72}, {0, 100}}, color = {191, 0, 0}));
+  connect(particleConductorB.port_b, port_b) annotation(
+    Line(points = {{60, 0}, {100, 0}}, color = {191, 0, 0}));
+  connect(particleConductorC.port_b, port_c) annotation(
+    Line(points = {{-18, -68}, {-18, -81}, {-60, -81}, {-60, -100}}, color = {191, 0, 0}));
+  connect(particleConductorC.port_a, particleCapacitor.port) annotation(
+    Line(points = {{-18, -48}, {-18, -23}, {-42, -23}, {-42, 26}}, color = {191, 0, 0}));
+  connect(particleConductorB.port_a, particleCapacitor.port) annotation(
+    Line(points = {{40, 0}, {0, 0}, {0, 26}, {-42, 26}}, color = {191, 0, 0}));
+  connect(particleConductorA.port_b, particleCapacitor.port) annotation(
+    Line(points = {{-52, 0}, {-42, 0}, {-42, 26}}, color = {191, 0, 0}));
+  connect(particleConductorD.port_a, particleCapacitor.port) annotation(
+    Line(points = {{0, 52}, {0, 26}, {-42, 26}}, color = {191, 0, 0}));
+  connect(concentrationSensor.port, particleCapacitor.port) annotation(
+    Line(points = {{-32, -4}, {-32, 26}, {-42, 26}}, color = {191, 0, 0}));
+  connect(const.y, prescribedParticleFlow1.P_flow) annotation(
+    Line(points = {{-67, -36}, {-52, -36}}, color = {0, 0, 127}));
+  connect(prescribedParticleFlow1.port, particleConductorC.port_a) annotation(
+    Line(points = {{-32, -36}, {-18, -36}, {-18, -48}}, color = {191, 0, 0}));
+  connect(port_e, particleConductorE.port_b) annotation(
+    Line(points = {{62, -98}, {24, -98}, {24, -68}}, color = {85, 170, 255}));
+  connect(particleConductorE.port_a, particleConductorB.port_a) annotation(
+    Line(points = {{24, -48}, {24, 0}, {40, 0}}, color = {191, 0, 0}));
+  annotation(
+    Icon(coordinateSystem(preserveAspectRatio = true, extent = {{-100, -100}, {100, 100}}), graphics = {Text(origin = {-14, 112}, extent = {{0, 0}, {-100, -100}}, textString = "G"), Ellipse(origin = {46, -32}, fillColor = {43, 43, 43}, fillPattern = FillPattern.Solid, extent = {{-4, 4}, {4, -4}}), Ellipse(origin = {66, 12}, fillColor = {43, 43, 43}, fillPattern = FillPattern.Solid, extent = {{-4, 4}, {4, -4}}), Ellipse(origin = {-32, -40}, fillColor = {43, 43, 43}, fillPattern = FillPattern.Solid, extent = {{-4, 4}, {4, -4}}), Ellipse(origin = {8, -22}, fillColor = {43, 43, 43}, fillPattern = FillPattern.Solid, extent = {{-4, 4}, {4, -4}}), Ellipse(origin = {-60, 10}, fillColor = {43, 43, 43}, fillPattern = FillPattern.Solid, extent = {{-4, 4}, {4, -4}}), Ellipse(origin = {40, 34}, fillColor = {43, 43, 43}, fillPattern = FillPattern.Solid, extent = {{-4, 4}, {4, -4}}), Ellipse(origin = {-6, 32}, fillColor = {43, 43, 43}, fillPattern = FillPattern.Solid, extent = {{-4, 4}, {4, -4}})}),
+    Documentation(info = "<html>
+<p>
+This is a model of one indoor air volume with one industrial process that generates nanoparticles. The dispersion of nanoparticles is simulated in a cartesian way.
+</html>"));
+end Room5G;

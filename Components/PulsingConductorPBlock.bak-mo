@@ -1,0 +1,154 @@
+within INP.Components;
+
+model PulsingConductorPBlock "Indoor air virtual volume with 2D particle dispersion and one source, with one wall in XN"
+  package Medium = Buildings.Media.Air(extraPropertiesNames = {"CO2"});
+  parameter Units.NonSI.ParticleConductance Qven "Constant particle conductance of a space";
+  parameter Modelica.Units.SI.Pressure pd(displayUnit = "Pa") "pressure drop due to ventilation";
+  Modelica.Units.SI.Power P_ven(fixed = false) "Total power consumption at each instant";
+  PGNP.Components.PulsingConductor pulsingVentilation(Q = Qven) annotation(
+    Placement(visible = true, transformation(origin = {0, 0}, extent = {{-14, -14}, {14, 14}}, rotation = 0)));
+  Modelica.Blocks.Interfaces.RealInput u annotation(
+    Placement(visible = true, transformation(origin = {0, -108}, extent = {{-20, -20}, {20, 20}}, rotation = 90), iconTransformation(origin = {4, -92}, extent = {{-20, -20}, {20, 20}}, rotation = 90)));
+  Modelica.Blocks.Math.RealToBoolean realToBoolean(threshold = 0.5) annotation(
+    Placement(visible = true, transformation(origin = {0, 50}, extent = {{-10, -10}, {10, 10}}, rotation = -90)));
+  Interfaces.NPort_a port_a annotation(
+    Placement(visible = true, transformation(origin = {0, 0}, extent = {{-110, -10}, {-90, 10}}, rotation = 0), iconTransformation(origin = {0, 0}, extent = {{-110, -10}, {-90, 10}}, rotation = 0)));
+  Interfaces.NPort_b port_b annotation(
+    Placement(visible = true, transformation(origin = {0, 0}, extent = {{90, -10}, {110, 10}}, rotation = 0), iconTransformation(origin = {0, 0}, extent = {{90, -10}, {110, 10}}, rotation = 0)));
+  Buildings.Fluid.Movers.Preconfigured.FlowControlled_m_flow flowControlled_m_flow2(energyDynamics = Modelica.Fluid.Types.Dynamics.SteadyState, m_flow_nominal = 1.293*Qven) annotation(
+    Placement(visible = true, transformation(origin = {247, -17}, extent = {{-7, -7}, {7, 7}}, rotation = 0)));
+  Buildings.Fluid.Movers.Preconfigured.FlowControlled_m_flow flowControlled_m_flow3(energyDynamics = Modelica.Fluid.Types.Dynamics.SteadyState, m_flow_nominal = 1.293*Qven) annotation(
+    Placement(visible = true, transformation(origin = {247, 9}, extent = {{-7, -7}, {7, 7}}, rotation = 0)));
+  Buildings.Fluid.Sources.Boundary_pT boundary_pT3(T = 293.15, nPorts = 1, p = 101325) annotation(
+    Placement(visible = true, transformation(origin = {271, 35}, extent = {{-7, -7}, {7, 7}}, rotation = 180)));
+  Buildings.Fluid.Sources.Boundary_pT sin(T = 293.15, nPorts = 1, p = 101325) annotation(
+    Placement(visible = true, transformation(origin = {271, 87}, extent = {{-7, -7}, {7, 7}}, rotation = 180)));
+  Buildings.Fluid.Sources.Boundary_pT boundary_pT7(T = 293.15, nPorts = 1, p = 101325 - pd) annotation(
+    Placement(visible = true, transformation(origin = {223, 9}, extent = {{-7, -7}, {7, 7}}, rotation = 0)));
+  Buildings.Fluid.Sources.Boundary_pT boundary_pT2(T = 293.15, nPorts = 1, p = 101325 - pd) annotation(
+    Placement(visible = true, transformation(origin = {223, 35}, extent = {{-7, -7}, {7, 7}}, rotation = 0)));
+  Buildings.Fluid.Sources.Boundary_pT boundary_pT14(T = 293.15, nPorts = 1, p = 101325) annotation(
+    Placement(visible = true, transformation(origin = {155, -89}, extent = {{-7, -7}, {7, 7}}, rotation = 180)));
+  Buildings.Fluid.Sources.Boundary_pT boundary_pT17(T = 293.15, nPorts = 1, p = 101325 - pd) annotation(
+    Placement(visible = true, transformation(origin = {109, 85}, extent = {{-7, -7}, {7, 7}}, rotation = 0)));
+  Buildings.Fluid.Sources.Boundary_pT boundary_pT4(T = 293.15, nPorts = 1, p = 101325 - pd) annotation(
+    Placement(visible = true, transformation(origin = {223, -41}, extent = {{-7, -7}, {7, 7}}, rotation = 0)));
+  Buildings.Fluid.Sources.Boundary_pT boundary_pT15(T = 293.15, nPorts = 1, p = 101325 - pd) annotation(
+    Placement(visible = true, transformation(origin = {107, -89}, extent = {{-7, -7}, {7, 7}}, rotation = 0)));
+  Buildings.Fluid.Movers.Preconfigured.FlowControlled_m_flow flowControlled_m_flow8(energyDynamics = Modelica.Fluid.Types.Dynamics.SteadyState, m_flow_nominal = 1.293*Qven) annotation(
+    Placement(visible = true, transformation(origin = {133, 85}, extent = {{-7, -7}, {7, 7}}, rotation = 0)));
+  Buildings.Fluid.Sources.Boundary_pT boundary_pT(T = 293.15, nPorts = 1, p = 101325 - pd) annotation(
+    Placement(visible = true, transformation(origin = {223, 61}, extent = {{-7, -7}, {7, 7}}, rotation = 0)));
+  Buildings.Fluid.Movers.Preconfigured.FlowControlled_m_flow flowControlled_m_flow1(energyDynamics = Modelica.Fluid.Types.Dynamics.SteadyState, m_flow_nominal = 1.293*Qven) annotation(
+    Placement(visible = true, transformation(origin = {247, 35}, extent = {{-7, -7}, {7, 7}}, rotation = 0)));
+  Buildings.Fluid.Sources.Boundary_pT boundary_pT9(T = 293.15, nPorts = 1, p = 101325) annotation(
+    Placement(visible = true, transformation(origin = {271, -17}, extent = {{-7, -7}, {7, 7}}, rotation = 180)));
+  Buildings.Fluid.Sources.Boundary_pT boundary_pT10(T = 293.15, nPorts = 1, p = 101325 - pd) annotation(
+    Placement(visible = true, transformation(origin = {223, -89}, extent = {{-7, -7}, {7, 7}}, rotation = 0)));
+  Buildings.Fluid.Sources.Boundary_pT boundary_pT8(T = 293.15, nPorts = 1, p = 101325) annotation(
+    Placement(visible = true, transformation(origin = {271, -41}, extent = {{-7, -7}, {7, 7}}, rotation = 180)));
+  Buildings.Fluid.Sources.Boundary_pT boundary_pT16(T = 293.15, nPorts = 1, p = 101325) annotation(
+    Placement(visible = true, transformation(origin = {157, 85}, extent = {{-7, -7}, {7, 7}}, rotation = 180)));
+  Buildings.Fluid.Sources.Boundary_pT bou(T = 293.15, nPorts = 1, p = 101325 - pd) annotation(
+    Placement(visible = true, transformation(origin = {223, 87}, extent = {{-7, -7}, {7, 7}}, rotation = 0)));
+  Buildings.Fluid.Movers.Preconfigured.FlowControlled_m_flow flowControlled_m_flow5(energyDynamics = Modelica.Fluid.Types.Dynamics.SteadyState, m_flow_nominal = 1.293*Qven) annotation(
+    Placement(visible = true, transformation(origin = {247, -89}, extent = {{-7, -7}, {7, 7}}, rotation = 0)));
+  Buildings.Fluid.Movers.Preconfigured.FlowControlled_m_flow flowControlled_m_flow0(energyDynamics = Modelica.Fluid.Types.Dynamics.SteadyState, m_flow_nominal = 1.293*Qven) annotation(
+    Placement(visible = true, transformation(origin = {247, 87}, extent = {{-7, -7}, {7, 7}}, rotation = 0)));
+  Buildings.Fluid.Movers.Preconfigured.FlowControlled_m_flow flowControlled_m_flow7(energyDynamics = Modelica.Fluid.Types.Dynamics.SteadyState, m_flow_nominal = 1.293*Qven) annotation(
+    Placement(visible = true, transformation(origin = {131, -89}, extent = {{-7, -7}, {7, 7}}, rotation = 0)));
+  Modelica.Blocks.Math.Sign sign annotation(
+    Placement(visible = true, transformation(origin = {128, 0}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  Buildings.Fluid.Sources.Boundary_pT boundary_pT6(T = 293.15, nPorts = 1, p = 101325) annotation(
+    Placement(visible = true, transformation(origin = {271, 9}, extent = {{-7, -7}, {7, 7}}, rotation = 180)));
+  Buildings.Fluid.Sources.Boundary_pT boundary_pT13(T = 293.15, nPorts = 1, p = 101325) annotation(
+    Placement(visible = true, transformation(origin = {271, -65}, extent = {{-7, -7}, {7, 7}}, rotation = 180)));
+  Buildings.Fluid.Movers.Preconfigured.FlowControlled_m_flow flowControlled_m_flow4(energyDynamics = Modelica.Fluid.Types.Dynamics.SteadyState, m_flow_nominal = 1.293*Qven) annotation(
+    Placement(visible = true, transformation(origin = {247, -41}, extent = {{-7, -7}, {7, 7}}, rotation = 0)));
+  Buildings.Fluid.Sources.Boundary_pT boundary_pT12(T = 293.15, nPorts = 1, p = 101325 - pd) annotation(
+    Placement(visible = true, transformation(origin = {223, -65}, extent = {{-7, -7}, {7, 7}}, rotation = 0)));
+  Buildings.Fluid.Sources.Boundary_pT boundary_pT11(T = 293.15, nPorts = 1, p = 101325) annotation(
+    Placement(visible = true, transformation(origin = {271, -89}, extent = {{-7, -7}, {7, 7}}, rotation = 180)));
+  Buildings.Fluid.Sources.Boundary_pT boundary_pT5(T = 293.15, nPorts = 1, p = 101325 - pd) annotation(
+    Placement(visible = true, transformation(origin = {223, -17}, extent = {{-7, -7}, {7, 7}}, rotation = 0)));
+  Buildings.Fluid.Movers.Preconfigured.FlowControlled_m_flow flowControlled_m_flow(energyDynamics = Modelica.Fluid.Types.Dynamics.SteadyState, m_flow_nominal = 1.293*Qven) annotation(
+    Placement(visible = true, transformation(origin = {247, 61}, extent = {{-7, -7}, {7, 7}}, rotation = 0)));
+  Buildings.Fluid.Movers.Preconfigured.FlowControlled_m_flow flowControlled_m_flow6(energyDynamics = Modelica.Fluid.Types.Dynamics.SteadyState, m_flow_nominal = 1.293*Qven) annotation(
+    Placement(visible = true, transformation(origin = {247, -65}, extent = {{-7, -7}, {7, 7}}, rotation = 0)));
+  Buildings.Fluid.Sources.Boundary_pT boundary_pT1(T = 293.15, nPorts = 1, p = 101325) annotation(
+    Placement(visible = true, transformation(origin = {271, 61}, extent = {{-7, -7}, {7, 7}}, rotation = 180)));
+equation
+  connect(port_a, pulsingVentilation.port_a) annotation(
+    Line(points = {{-100, 0}, {-14, 0}}, color = {191, 0, 0}));
+  connect(pulsingVentilation.port_b, port_b) annotation(
+    Line(points = {{14, 0}, {100, 0}}, color = {191, 0, 0}));
+  connect(realToBoolean.y, pulsingVentilation.switch) annotation(
+    Line(points = {{0, 39}, {0, 17}}, color = {255, 0, 255}));
+  connect(realToBoolean.u, u) annotation(
+    Line(points = {{0, 62}, {0, 78}, {-82, 78}, {-82, -72}, {0, -72}, {0, -108}}, color = {0, 0, 127}));
+  connect(pulsingVentilation.port_a, port_a) annotation(
+    Line(points = {{-14, 0}, {-100, 0}}, color = {191, 0, 0}));
+  connect(pulsingVentilation.port_b, port_b) annotation(
+    Line(points = {{14, 0}, {100, 0}}, color = {191, 0, 0}));
+  connect(flowControlled_m_flow2.port_b, boundary_pT9.ports[1]) annotation(
+    Line(points = {{254, -17}, {264, -17}}, color = {0, 127, 255}));
+  connect(flowControlled_m_flow8.m_flow_in, sign.y) annotation(
+    Line(points = {{133, 93.4}, {131, 93.4}, {131, 97.4}, {187, 97.4}, {187, -0.6}, {138, -0.6}}, color = {0, 0, 127}));
+  connect(boundary_pT15.ports[1], flowControlled_m_flow7.port_a) annotation(
+    Line(points = {{114, -89}, {124, -89}}, color = {0, 127, 255}));
+  connect(flowControlled_m_flow7.m_flow_in, sign.y) annotation(
+    Line(points = {{131, -80.6}, {129, -80.6}, {129, -76.6}, {187, -76.6}, {187, -0.6}, {138, -0.6}}, color = {0, 0, 127}));
+  connect(flowControlled_m_flow5.m_flow_in, sign.y) annotation(
+    Line(points = {{247, -80.6}, {245, -80.6}, {245, -76.6}, {187, -76.6}, {187, -0.6}, {138, -0.6}}, color = {0, 0, 127}));
+  connect(boundary_pT4.ports[1], flowControlled_m_flow4.port_a) annotation(
+    Line(points = {{230, -41}, {240, -41}}, color = {0, 127, 255}));
+  connect(flowControlled_m_flow1.port_b, boundary_pT3.ports[1]) annotation(
+    Line(points = {{254, 35}, {264, 35}}, color = {0, 127, 255}));
+  connect(flowControlled_m_flow.port_b, boundary_pT1.ports[1]) annotation(
+    Line(points = {{254, 61}, {264, 61}}, color = {0, 127, 255}));
+  connect(flowControlled_m_flow8.port_b, boundary_pT16.ports[1]) annotation(
+    Line(points = {{140, 85}, {150, 85}}, color = {0, 127, 255}));
+  connect(flowControlled_m_flow1.m_flow_in, sign.y) annotation(
+    Line(points = {{247, 43.4}, {246, 43.4}, {246, 46.4}, {188, 46.4}, {188, 0.4}, {139, 0.4}}, color = {0, 0, 127}));
+  connect(boundary_pT.ports[1], flowControlled_m_flow.port_a) annotation(
+    Line(points = {{230, 61}, {240, 61}}, color = {0, 127, 255}));
+  connect(flowControlled_m_flow3.m_flow_in, sign.y) annotation(
+    Line(points = {{247, 17.4}, {246, 17.4}, {246, 22.4}, {188, 22.4}, {188, 0.4}, {139, 0.4}}, color = {0, 0, 127}));
+  connect(flowControlled_m_flow4.port_b, boundary_pT8.ports[1]) annotation(
+    Line(points = {{254, -41}, {264, -41}}, color = {0, 127, 255}));
+  connect(flowControlled_m_flow5.port_b, boundary_pT11.ports[1]) annotation(
+    Line(points = {{254, -89}, {264, -89}}, color = {0, 127, 255}));
+  connect(boundary_pT5.ports[1], flowControlled_m_flow2.port_a) annotation(
+    Line(points = {{230, -17}, {240, -17}}, color = {0, 127, 255}));
+  connect(flowControlled_m_flow.m_flow_in, sign.y) annotation(
+    Line(points = {{247, 69.4}, {246, 69.4}, {246, 74.4}, {188, 74.4}, {188, 0.4}, {139, 0.4}}, color = {0, 0, 127}));
+  connect(boundary_pT2.ports[1], flowControlled_m_flow1.port_a) annotation(
+    Line(points = {{230, 35}, {240, 35}}, color = {0, 127, 255}));
+  connect(flowControlled_m_flow2.m_flow_in, sign.y) annotation(
+    Line(points = {{247, -8.6}, {245, -8.6}, {245, -6.6}, {187, -6.6}, {187, -0.6}, {138, -0.6}}, color = {0, 0, 127}));
+  connect(boundary_pT10.ports[1], flowControlled_m_flow5.port_a) annotation(
+    Line(points = {{230, -89}, {240, -89}}, color = {0, 127, 255}));
+  connect(flowControlled_m_flow0.m_flow_in, sign.y) annotation(
+    Line(points = {{247, 95.4}, {246, 95.4}, {246, 98.4}, {188, 98.4}, {188, 0.4}, {139, 0.4}}, color = {0, 0, 127}));
+  connect(bou.ports[1], flowControlled_m_flow0.port_a) annotation(
+    Line(points = {{230, 87}, {240, 87}}, color = {0, 127, 255}));
+  connect(flowControlled_m_flow4.m_flow_in, sign.y) annotation(
+    Line(points = {{247, -32.6}, {246, -32.6}, {246, -29.6}, {188, -29.6}, {188, 0.4}, {139, 0.4}}, color = {0, 0, 127}));
+  connect(flowControlled_m_flow0.port_b, sin.ports[1]) annotation(
+    Line(points = {{254, 87}, {264, 87}}, color = {0, 127, 255}));
+  connect(boundary_pT17.ports[1], flowControlled_m_flow8.port_a) annotation(
+    Line(points = {{116, 85}, {126, 85}}, color = {0, 127, 255}));
+  connect(flowControlled_m_flow6.m_flow_in, sign.y) annotation(
+    Line(points = {{247, -56.6}, {245, -56.6}, {245, -54.6}, {187, -54.6}, {187, -0.6}, {138, -0.6}}, color = {0, 0, 127}));
+  connect(flowControlled_m_flow7.port_b, boundary_pT14.ports[1]) annotation(
+    Line(points = {{138, -89}, {148, -89}}, color = {0, 127, 255}));
+  connect(sign.u, u) annotation(
+    Line(points = {{116, 0}, {108, 0}, {108, -72}, {0, -72}, {0, -108}}, color = {0, 0, 127}));
+  P_ven = flowControlled_m_flow.P + flowControlled_m_flow0.P + flowControlled_m_flow1.P + flowControlled_m_flow2.P + flowControlled_m_flow3.P + flowControlled_m_flow4.P + flowControlled_m_flow5.P + flowControlled_m_flow4.P + flowControlled_m_flow6.P + flowControlled_m_flow7.P + flowControlled_m_flow8.P;
+  annotation(
+    Icon(coordinateSystem(preserveAspectRatio = true, extent = {{-100, -100}, {100, 100}}), graphics = {Ellipse(origin = {18, 6}, fillColor = {43, 43, 43}, fillPattern = FillPattern.Solid, extent = {{-4, 4}, {4, -4}}), Ellipse(origin = {34, -10}, fillColor = {43, 43, 43}, fillPattern = FillPattern.Solid, extent = {{-4, 4}, {4, -4}}), Ellipse(origin = {56, 2}, fillColor = {43, 43, 43}, fillPattern = FillPattern.Solid, extent = {{-4, 4}, {4, -4}}), Ellipse(origin = {2, 44}, extent = {{-90, 92}, {90, -92}}), Rectangle(origin = {-44, 0}, lineColor = {170, 170, 0}, fillColor = {243, 243, 243}, pattern = LinePattern.None, fillPattern = FillPattern.HorizontalCylinder, extent = {{-45, 50}, {45, -50}}), Ellipse(origin = {-26, -22}, fillColor = {43, 43, 43}, fillPattern = FillPattern.Solid, extent = {{-4, 4}, {4, -4}}), Ellipse(origin = {-60, 10}, fillColor = {43, 43, 43}, fillPattern = FillPattern.Solid, extent = {{-4, 4}, {4, -4}}), Ellipse(origin = {-70, -4}, fillColor = {43, 43, 43}, fillPattern = FillPattern.Solid, extent = {{-4, 4}, {4, -4}}), Ellipse(origin = {-50, 0}, fillColor = {43, 43, 43}, fillPattern = FillPattern.Solid, extent = {{-4, 4}, {4, -4}}), Line(origin = {91.0966, -1.2346}, points = {{-90, 50}, {-90, -50}}, thickness = 0.5), Rectangle(origin = {-8, 96}, fillColor = {255, 255, 255}, pattern = LinePattern.None, fillPattern = FillPattern.Solid, extent = {{-117, 48}, {117, -48}}), Text(origin = {2, -20}, lineColor = {0, 0, 255}, extent = {{-150, 120}, {150, 80}}, textString = "%name"), Line(origin = {36.8, 2.2}, points = {{-36, 43}, {54, 43}}, color = {170, 170, 0}, thickness = 3)}),
+    Documentation(info = "<html>
+This is a model of one indoor air volume with one industrial process that generates nanoparticles. The dispersion of nanoparticles is simulated in a cartesian way. This model represents the part of the room in contact with a wall.
+</html>"),
+    Diagram);
+end PulsingConductorPBlock;
