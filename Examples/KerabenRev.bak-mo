@@ -1,0 +1,60 @@
+within INP.Examples;
+
+model KerabenRev "Simple diffusion demo"
+  constant Real Q1 = 6;
+  constant Real Q2 = 0.1;
+  constant Real vol = 1200;
+  extends Modelica.Icons.Example;
+  parameter Units.NonSI.ParticleConcetration C_final(fixed = false) "Final Concentration";
+  PGNP.Components.Room2 FF(V = vol, XE = Q1, YS = Q1) annotation(
+    Placement(visible = true, transformation(origin = {50, -84}, extent = {{-10, -10}, {10, 10}}, rotation = 180)));
+  Modelica.Blocks.Sources.Constant kilnFocus(k = 40*10^10) annotation(
+    Placement(visible = true, transformation(origin = {10, -8}, extent = {{-8, -8}, {8, 8}}, rotation = 0)));
+  PGNP.Sources.FixedConcentration outdoors(N = 30000e6) annotation(
+    Placement(visible = true, transformation(origin = {-38, -84}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  PGNP.Components.Room2 NF3(V = vol, XE = Q1, YS = Q1) annotation(
+    Placement(visible = true, transformation(origin = {50, 84}, extent = {{-10, -10}, {10, 10}}, rotation = 270)));
+  PGNP.Components.Room2 NF2(V = vol, XE = Q1, YS = Q1) annotation(
+    Placement(visible = true, transformation(origin = {50, 54}, extent = {{-10, -10}, {10, 10}}, rotation = 180)));
+  PGNP.Components.Room2S NF1(V = vol, XE = Q1, YS = Q1) annotation(
+    Placement(visible = true, transformation(origin = {50, 20}, extent = {{-10, -10}, {10, 10}}, rotation = -90)));
+  PGNP.Components.Room2 NFWA(V = vol, XE = Q1, YS = Q1) annotation(
+    Placement(visible = true, transformation(origin = {50, -26}, extent = {{-10, -10}, {10, 10}}, rotation = 180)));
+  PGNP.Components.Room2S WA(V = vol, XE = Q1, YS = Q2) annotation(
+    Placement(visible = true, transformation(origin = {50, -54}, extent = {{-10, -10}, {10, 10}}, rotation = -90)));
+  Modelica.Blocks.Sources.Constant kilnEnd(k = 40*10^10) annotation(
+    Placement(visible = true, transformation(origin = {8, -68}, extent = {{-8, -8}, {8, 8}}, rotation = 0)));
+equation
+  connect(NF2.port_a, NF3.port_b) annotation(
+    Line(points = {{50, 63.8}, {50, 73.8}}, color = {191, 0, 0}));
+  connect(NF2.port_b, NF1.port_a) annotation(
+    Line(points = {{40, 54.2}, {22, 54.2}, {22, 20.2}, {40, 20.2}}, color = {191, 0, 0}));
+  connect(NFWA.port_a, NF1.port_b) annotation(
+    Line(points = {{50, -16.2}, {50, 9.8}}, color = {191, 0, 0}));
+  connect(WA.port_a, NFWA.port_b) annotation(
+    Line(points = {{40, -54}, {26, -54}, {26, -26}, {40, -26}}, color = {191, 0, 0}));
+  connect(WA.port_b, FF.port_a) annotation(
+    Line(points = {{50, -64}, {50, -74}}, color = {191, 0, 0}));
+  connect(outdoors.port, FF.port_b) annotation(
+    Line(points = {{-28, -84}, {40, -84}}, color = {191, 0, 0}));
+  connect(NF3.port_a, outdoors.port) annotation(
+    Line(points = {{40, 84}, {-8, 84}, {-8, -84}, {-28, -84}}, color = {191, 0, 0}));
+  connect(kilnFocus.y, NF1.u) annotation(
+    Line(points = {{18, -8}, {44, -8}, {44, 10}}, color = {0, 0, 127}));
+  connect(kilnEnd.y, WA.u) annotation(
+    Line(points = {{16, -68}, {44, -68}, {44, -64}}, color = {0, 0, 127}));
+initial equation
+
+protected
+  annotation(
+    Documentation(info = "<html>
+<p>
+This example demonstrates the concentration response of a grid of nine indoor air volumes connected by conducting elements. The nine volumes have the same volume and initial concentration. The volum in the middle of the grid have an industrial process that generates nanoparticles with a pulse function with a period of 3000s (50% the pulse is on on and 50% of the pulse is off). The concentration will rise in the grid (there is no incoming clean air).
+</p>
+<p>
+Simulate for 10000 s and plot the variables<br>
+Room.ParticleCapacitor.C, Room2.ParticleCapacitor.C, Room21.ParticleCapacitor.C, Room211.ParticleCapacitor.C, Room211.ParticleCapacitor.C, Room3.ParticleCapacitor.C, Room31.ParticleCapacitor.C, Room32.ParticleCapacitor.C, Room33.ParticleCapacitor.C   
+</p>
+</html>"),
+    experiment(StopTime = 10000, Interval = 1, StartTime = 0, Tolerance = 1e-06));
+end KerabenRev;

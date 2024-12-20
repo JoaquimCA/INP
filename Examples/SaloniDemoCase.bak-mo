@@ -1,0 +1,79 @@
+within INP.Examples;
+
+model SaloniDemoCase "Simple diffusion demo"
+  constant Real FlowS = 0.5;
+  constant Real WallS = 0.1;
+  constant Real WallC = 2;
+  constant Real Corner = 3;
+  extends Modelica.Icons.Example;
+  parameter Units.NonSI.ParticleConcetration C_final(fixed = false) "Final Concentration";
+  Components.Room room(C0 = 160e9, V = 70, XE = FlowS, XW = FlowS, YN = FlowS, YS = FlowS) annotation(
+    Placement(visible = true, transformation(origin = {0, 0}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  Components.Room2 room2(V = 70, XE = Corner, YS = Corner) annotation(
+    Placement(visible = true, transformation(origin = {-90, 90}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  Components.Room2 room21(V = 70, XE = Corner, YS = Corner) annotation(
+    Placement(visible = true, transformation(origin = {90, 90}, extent = {{-10, -10}, {10, 10}}, rotation = -90)));
+  Components.Room2 room211(V = 70, XE = Corner, YS = Corner) annotation(
+    Placement(visible = true, transformation(origin = {90, -90}, extent = {{-10, -10}, {10, 10}}, rotation = 180)));
+  Components.Room2 room2111(V = 70, XE = Corner, YS = Corner) annotation(
+    Placement(visible = true, transformation(origin = {-90, -90}, extent = {{-10, -10}, {10, 10}}, rotation = 90)));
+  Components.Room3 room3(V = 70, XE = WallC, XW = WallC, YS = 0.1) annotation(
+    Placement(visible = true, transformation(origin = {0, 90}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  Components.Room3 room31(V = 70, XE = WallC, XW = WallC, YS = WallS) annotation(
+    Placement(visible = true, transformation(origin = {90, 0}, extent = {{-10, -10}, {10, 10}}, rotation = -90)));
+  Components.Room3 room32(V = 70, XE = WallC, XW = WallC, YS = WallS) annotation(
+    Placement(visible = true, transformation(origin = {-90, 0}, extent = {{-10, -10}, {10, 10}}, rotation = 90)));
+  Components.Room3 room33(V = 70, XE = WallC, XW = WallC, YS = WallS) annotation(
+    Placement(visible = true, transformation(origin = {0, -90}, extent = {{-10, -10}, {10, 10}}, rotation = 180)));
+  Modelica.Blocks.Sources.Constant const(k = 3.21e10) annotation(
+    Placement(visible = true, transformation(origin = {-40, -58}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  Components.ForcedParticleConductor forcedParticleConductor(G = 200) annotation(
+    Placement(visible = true, transformation(origin = {-122, -30}, extent = {{-10, -10}, {10, 10}}, rotation = -90)));
+  Sources.FixedConcentration fixedConcentration(C = 10e9) annotation(
+    Placement(visible = true, transformation(origin = {-148, -62}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+equation
+  connect(room3.port_b, room21.port_a) annotation(
+    Line(points = {{10, 90}, {80, 90}}, color = {191, 0, 0}));
+  connect(room2.port_b, room3.port_a) annotation(
+    Line(points = {{-80, 90}, {-10, 90}}, color = {191, 0, 0}));
+  connect(room21.port_b, room31.port_a) annotation(
+    Line(points = {{90, 80}, {90, 10}}, color = {191, 0, 0}));
+  connect(room31.port_b, room211.port_a) annotation(
+    Line(points = {{90, -10}, {90, -80}}, color = {191, 0, 0}));
+  connect(room32.port_a, room2111.port_b) annotation(
+    Line(points = {{-90, -10}, {-90, -80}}, color = {191, 0, 0}));
+  connect(room32.port_b, room2.port_a) annotation(
+    Line(points = {{-90, 10}, {-90, 80}}, color = {191, 0, 0}));
+  connect(room33.port_a, room211.port_b) annotation(
+    Line(points = {{10, -90}, {80, -90}}, color = {191, 0, 0}));
+  connect(room2111.port_a, room33.port_b) annotation(
+    Line(points = {{-80, -90}, {-10, -90}}, color = {191, 0, 0}));
+  connect(room3.port_a1, room.port_YN) annotation(
+    Line(points = {{0, 80}, {0, 10}}, color = {191, 0, 0}));
+  connect(room.port_XE, room31.port_a1) annotation(
+    Line(points = {{10, 0}, {80, 0}}, color = {191, 0, 0}));
+  connect(room33.port_a1, room.port_YS) annotation(
+    Line(points = {{0, -80}, {0, -10}}, color = {191, 0, 0}));
+  connect(room32.port_a1, room.port_XW) annotation(
+    Line(points = {{-80, 0}, {-10, 0}}, color = {191, 0, 0}));
+  connect(const.y, room.u) annotation(
+    Line(points = {{-28, -58}, {-10, -58}, {-10, -6}}, color = {0, 0, 127}));
+  connect(fixedConcentration.port, forcedParticleConductor.port_b) annotation(
+    Line(points = {{-138, -62}, {-122, -62}, {-122, -40}}, color = {191, 0, 0}));
+  connect(forcedParticleConductor.port_a, room32.port_a) annotation(
+    Line(points = {{-122, -20}, {-90, -20}, {-90, -10}}, color = {191, 0, 0}));
+initial equation
+
+protected
+  annotation(
+    Documentation(info = "<html>
+<p>
+This example demonstrates the concentration response of a grid of nine indoor air volumes connected by conducting elements. The nine volumes have the same volume and initial concentration. The volum in the middle of the grid have an industrial process that generates nanoparticles with a pulse function with a period of 3000s (50% the pulse is on on and 50% of the pulse is off). The concentration will rise in the grid (there is no incoming clean air).
+</p>
+<p>
+Simulate for 10000 s and plot the variables<br>
+Room.ParticleCapacitor.C, Room2.ParticleCapacitor.C, Room21.ParticleCapacitor.C, Room211.ParticleCapacitor.C, Room211.ParticleCapacitor.C, Room3.ParticleCapacitor.C, Room31.ParticleCapacitor.C, Room32.ParticleCapacitor.C, Room33.ParticleCapacitor.C   
+</p>
+</html>"),
+    experiment(StopTime = 10000, Interval = 1, StartTime = 0, Tolerance = 1e-06));
+end SaloniDemoCase;

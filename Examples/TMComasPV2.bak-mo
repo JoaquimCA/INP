@@ -1,0 +1,148 @@
+within INP.Examples;
+
+model TMComasPV2 "Simple diffusion demo"
+  extends Modelica.Icons.Example;
+  package Medium = Buildings.Media.Air(extraPropertiesNames = {"CO2"});
+  Modelica.Units.SI.Power P_total(fixed = false) "Total power consumption at each instant";
+  PGNP.Components.ParticleCapacitor booth1(N(fixed = false), V = 45) annotation(
+    Placement(visible = true, transformation(origin = {-82, 82}, extent = {{-14, -14}, {14, 14}}, rotation = 0)));
+  PGNP.Components.ParticleCapacitor booth2(N(fixed = false), V = 102) annotation(
+    Placement(visible = true, transformation(origin = {84, 50}, extent = {{-14, -14}, {14, 14}}, rotation = 0)));
+  PGNP.Components.ParticleCapacitor booth3(N(fixed = false), V = 84) annotation(
+    Placement(visible = true, transformation(origin = {52, -70}, extent = {{-14, -14}, {14, 14}}, rotation = 0)));
+  PGNP.Sensors.NanoParticleCountingSensor Nsensor2 annotation(
+    Placement(visible = true, transformation(origin = {60, 36}, extent = {{10, -10}, {-10, 10}}, rotation = 0)));
+  PGNP.Sensors.NanoParticleCountingSensor Nsensor3 annotation(
+    Placement(visible = true, transformation(origin = {80, -84}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  PGNP.Sensors.NanoParticleCountingSensor Nsensor1 annotation(
+    Placement(visible = true, transformation(origin = {-56, 68}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  Modelica.Blocks.Math.MultiProduct multiProduct(nu = 2) annotation(
+    Placement(visible = true, transformation(origin = {-56, -78}, extent = {{-6, -6}, {6, 6}}, rotation = 0)));
+  Modelica.Blocks.Sources.Constant cm3_to_m3(k = 10^6) annotation(
+    Placement(visible = true, transformation(origin = {-82, -54}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  Modelica.Blocks.Sources.CombiTimeTable background(extrapolation = Modelica.Blocks.Types.Extrapolation.HoldLastPoint, fileName = "G:/Mi unidad/Doctorat/papers/energia/bg.txt", tableName = "tab", tableOnFile = true, timeScale = 60) annotation(
+    Placement(visible = true, transformation(origin = {-82, -86}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  PGNP.Sources.PrescribedConcentration BG annotation(
+    Placement(visible = true, transformation(origin = {-42, -56}, extent = {{-10, -10}, {10, 10}}, rotation = 90)));
+  Modelica.Blocks.Sources.CombiTimeTable ventilations(columns = 2:4, extrapolation = Modelica.Blocks.Types.Extrapolation.HoldLastPoint, fileName = "G:/Mi unidad/Doctorat/papers/energia/ven.txt", smoothness = Modelica.Blocks.Types.Smoothness.ConstantSegments, tableName = "tab", tableOnFile = true, timeScale = 60) annotation(
+    Placement(visible = true, transformation(origin = {-66, -22}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  PGNP.Sources.PrescribedPulsingParticleFlow APS2(P_flow(displayUnit = "s-1") = 2.3e13) annotation(
+    Placement(visible = true, transformation(origin = {66, 12}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  PGNP.Sources.PrescribedPulsingParticleFlow APS3(P_flow(displayUnit = "s-1") = 2.3e13) annotation(
+    Placement(visible = true, transformation(origin = {56, -44}, extent = {{10, -10}, {-10, 10}}, rotation = 0)));
+  PGNP.Sources.PrescribedPulsingParticleFlow HVOF1(P_flow(displayUnit = "s-1") = 6.08e13) annotation(
+    Placement(visible = true, transformation(origin = {-68, 44}, extent = {{10, -10}, {-10, 10}}, rotation = 0)));
+  Modelica.Blocks.Sources.CombiTimeTable generations(columns = 2:4, extrapolation = Modelica.Blocks.Types.Extrapolation.HoldLastPoint, fileName = "G:/Mi unidad/Doctorat/papers/energia/gen.txt", tableName = "tab", tableOnFile = true, timeScale = 60*5) annotation(
+    Placement(visible = true, transformation(origin = {84, -16}, extent = {{10, -10}, {-10, 10}}, rotation = 0)));
+  PGNP.Sensors.NanoParticleCountingSensor NsensorBG annotation(
+    Placement(visible = true, transformation(origin = {-14, -74}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  Modelica.Blocks.Math.RealToBoolean r2B1 annotation(
+    Placement(visible = true, transformation(origin = {-48, 44}, extent = {{6, -6}, {-6, 6}}, rotation = 0)));
+  Modelica.Blocks.Math.RealToBoolean r2B3 annotation(
+    Placement(visible = true, transformation(origin = {78, -44}, extent = {{6, -6}, {-6, 6}}, rotation = 0)));
+  Modelica.Blocks.Math.RealToBoolean r2B2 annotation(
+    Placement(visible = true, transformation(origin = {42, 12}, extent = {{-6, -6}, {6, 6}}, rotation = 0)));
+  PGNP.Components.DividedConductorP ventAPS(Qven = 4.17, pd = 2.752e3) annotation(
+    Placement(visible = true, transformation(origin = {22, -36}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  PGNP.Components.PulsingConductorP ventHVOF(Qven = 2, pd = 4.19e3) annotation(
+    Placement(visible = true, transformation(origin = {-82, 20}, extent = {{-10, -10}, {10, 10}}, rotation = 90)));
+  parameter PhotoVoltaics.Records.SHARP_NU_S5_E3E moduleData annotation(
+    Placement(visible = true, transformation(origin = {18, -78}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  Modelica.Blocks.Sources.CombiTimeTable irrad(extrapolation = Modelica.Blocks.Types.Extrapolation.HoldLastPoint, fileName = "G:/Mi unidad/Doctorat/papers/energia/2020.07.19_8.00-17.00.txt", tableName = "tab", tableOnFile = true, timeScale = 3600) annotation(
+    Placement(visible = true, transformation(origin = {-18, 8}, extent = {{10, -10}, {-10, 10}}, rotation = 0)));
+  Modelica.Electrical.QuasiStatic.SinglePhase.Sources.VoltageSource voltageSource(V = 400, f = 50, gamma(displayUnit = "rad", fixed = true, start = 0), phi = 0) annotation(
+    Placement(visible = true, transformation(origin = {54, 80}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  PhotoVoltaics.Components.Blocks.MPTrackerSample mpTracker(ImpRef = moduleData.ImpRef, VmpRef = moduleData.VmpRef) annotation(
+    Placement(visible = true, transformation(extent = {{-2, 22}, {18, 42}}, rotation = 0)));
+  PhotoVoltaics.Components.SimplePhotoVoltaics.SimplePlantSymmetric plant(T = 298.15, moduleData = moduleData, npModule = 5, nsModule = 40, useConstantIrradiance = false) annotation(
+    Placement(visible = true, transformation(origin = {-20, 70}, extent = {{-10, 10}, {10, -10}}, rotation = -90)));
+  PhotoVoltaics.Components.Converters.QuasiStaticSinglePhaseConverter converter annotation(
+    Placement(visible = true, transformation(extent = {{16, 60}, {36, 80}}, rotation = 0)));
+  Modelica.Electrical.Analog.Basic.Ground groundDC annotation(
+    Placement(visible = true, transformation(origin = {-20, 40}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  Modelica.Electrical.QuasiStatic.SinglePhase.Basic.Ground groundAC annotation(
+    Placement(visible = true, transformation(origin = {80, 80}, extent = {{-10, 10}, {10, -10}}, rotation = -90)));
+  Modelica.Electrical.Analog.Sensors.PowerSensor powerSensor annotation(
+    Placement(visible = true, transformation(extent = {{-4, 74}, {16, 94}}, rotation = 0)));
+equation
+  connect(booth3.port, Nsensor3.port) annotation(
+    Line(points = {{52, -84}, {70, -84}}, color = {191, 0, 0}));
+  connect(Nsensor1.port, booth1.port) annotation(
+    Line(points = {{-66, 68}, {-82, 68}}, color = {191, 0, 0}));
+  connect(multiProduct.y, BG.N) annotation(
+    Line(points = {{-49, -78}, {-42, -78}, {-42, -68}}, color = {0, 0, 127}));
+  connect(cm3_to_m3.y, multiProduct.u[1]) annotation(
+    Line(points = {{-71, -54}, {-62, -54}, {-62, -78}}, color = {0, 0, 127}));
+  connect(background.y[1], multiProduct.u[2]) annotation(
+    Line(points = {{-71, -86}, {-62, -86}, {-62, -78}}, color = {0, 0, 127}));
+  connect(APS2.port, booth2.port) annotation(
+    Line(points = {{76, 12}, {84, 12}, {84, 36}}, color = {191, 0, 0}));
+  connect(Nsensor2.port, booth2.port) annotation(
+    Line(points = {{70, 36}, {84, 36}}, color = {191, 0, 0}));
+  connect(r2B2.y, APS2.switch) annotation(
+    Line(points = {{48.6, 12}, {56.6, 12}}, color = {255, 0, 255}));
+  connect(r2B1.y, HVOF1.switch) annotation(
+    Line(points = {{-55, 44}, {-59, 44}}, color = {255, 0, 255}));
+  connect(r2B3.y, APS3.switch) annotation(
+    Line(points = {{72, -44}, {66, -44}}, color = {255, 0, 255}));
+  connect(r2B2.u, generations.y[2]) annotation(
+    Line(points = {{35, 12}, {26, 12}, {26, -16}, {73, -16}}, color = {0, 0, 127}));
+  connect(generations.y[3], r2B3.u) annotation(
+    Line(points = {{73, -16}, {52, -16}, {52, -28}, {94, -28}, {94, -44}, {86, -44}}, color = {0, 0, 127}));
+  connect(generations.y[1], r2B1.u) annotation(
+    Line(points = {{73, -16}, {-38, -16}, {-38, 44}, {-41, 44}}, color = {0, 0, 127}));
+  connect(BG.port, ventAPS.port_a) annotation(
+    Line(points = {{-42, -46}, {-42, -36}, {12, -36}}, color = {191, 0, 0}));
+  connect(ventAPS.port_c, booth3.port) annotation(
+    Line(points = {{32, -39}, {36, -39}, {36, -84}, {52, -84}}, color = {191, 0, 0}));
+  connect(ventAPS.port_b, booth2.port) annotation(
+    Line(points = {{32, -34}, {36, -34}, {36, 2}, {84, 2}, {84, 36}}, color = {191, 0, 0}));
+  connect(ventilations.y[2], ventAPS.v) annotation(
+    Line(points = {{-55, -22}, {22, -22}, {22, -24}}, color = {0, 0, 127}));
+  connect(ventilations.y[3], ventAPS.u) annotation(
+    Line(points = {{-55, -22}, {8, -22}, {8, -52}, {22, -52}, {22, -45}}, color = {0, 0, 127}));
+  connect(NsensorBG.port, BG.port) annotation(
+    Line(points = {{-24, -74}, {-28, -74}, {-28, -40}, {-42, -40}, {-42, -46}}, color = {191, 0, 0}));
+  connect(APS3.port, booth3.port) annotation(
+    Line(points = {{46, -44}, {36, -44}, {36, -84}, {52, -84}}, color = {191, 0, 0}));
+  connect(HVOF1.port, booth1.port) annotation(
+    Line(points = {{-78, 44}, {-82, 44}, {-82, 68}}, color = {191, 0, 0}));
+  connect(ventHVOF.port_b, booth1.port) annotation(
+    Line(points = {{-82, 30}, {-82, 68}}, color = {191, 0, 0}));
+  connect(ventHVOF.port_a, BG.port) annotation(
+    Line(points = {{-82, 10}, {-82, -36}, {-42, -36}, {-42, -46}}, color = {191, 0, 0}));
+  connect(ventHVOF.u, ventilations.y[1]) annotation(
+    Line(points = {{-72, 20}, {-50, 20}, {-50, -22}, {-55, -22}}, color = {0, 0, 127}));
+  P_total = ventHVOF.fan.P + ventAPS.fan.P;
+  connect(powerSensor.nv, groundDC.p) annotation(
+    Line(points = {{6, 74}, {6, 50}, {-20, 50}}, color = {0, 0, 255}));
+  connect(mpTracker.vRef, converter.vDCRef) annotation(
+    Line(points = {{19, 32}, {20, 32}, {20, 58}}, color = {0, 0, 127}));
+  connect(groundDC.p, converter.dc_n) annotation(
+    Line(points = {{-20, 50}, {16, 50}, {16, 64}}, color = {0, 0, 255}));
+  connect(mpTracker.power, powerSensor.power) annotation(
+    Line(points = {{-4, 32}, {-4, 73}}, color = {0, 0, 127}));
+  connect(irrad.y[1], plant.variableIrradiance) annotation(
+    Line(points = {{-29, 8}, {-34.5, 8}, {-34.5, 70}, {-32, 70}}, color = {0, 0, 127}));
+  connect(groundAC.pin, voltageSource.pin_n) annotation(
+    Line(points = {{70, 80}, {64, 80}}, color = {85, 170, 255}));
+  connect(powerSensor.nc, converter.dc_p) annotation(
+    Line(points = {{16, 84}, {16, 76}}, color = {0, 0, 255}));
+  connect(converter.ac_n, groundAC.pin) annotation(
+    Line(points = {{36, 64}, {70, 64}, {70, 80}}, color = {85, 170, 255}));
+  connect(powerSensor.pc, powerSensor.pv) annotation(
+    Line(points = {{-4, 84}, {-4, 94}, {6, 94}}, color = {0, 0, 255}));
+  connect(converter.ac_p, voltageSource.pin_p) annotation(
+    Line(points = {{36, 76}, {36, 80}, {44, 80}}, color = {85, 170, 255}));
+  connect(plant.p, powerSensor.pc) annotation(
+    Line(points = {{-20, 80}, {-10, 80}, {-10, 84}, {-4, 84}}, color = {0, 0, 255}));
+  connect(plant.n, groundDC.p) annotation(
+    Line(points = {{-20, 60}, {-20, 50}}, color = {0, 0, 255}));
+  annotation(
+    Documentation(info = "<html>
+<p>
+This example simulates pilot TMcomas from LIFE NANOHEALTH project.
+</p>
+</html>"),
+    experiment(StopTime = 32400, Interval = 1));
+end TMComasPV2;

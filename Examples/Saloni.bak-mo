@@ -1,0 +1,104 @@
+within INP.Examples;
+
+model Saloni "Simple diffusion demo"
+  constant Real Q1 = 0.47;
+  constant Real Q2 = 0.33;
+  constant Real vol = 1452;
+  extends Modelica.Icons.Example;
+  parameter Units.NonSI.ParticleConcetration C_final(fixed = false) "Final Concentration";
+  PGNP.Components.Room2 NF4(V = vol, XE = Q1, YS = Q1) annotation(
+    Placement(visible = true, transformation(origin = {50, -84}, extent = {{-10, -10}, {10, 10}}, rotation = 180)));
+  PGNP.Components.Room2S WA(V = vol, XE = Q1, YS = Q1) annotation(
+    Placement(visible = true, transformation(origin = {50, 82}, extent = {{-10, -10}, {10, 10}}, rotation = -90)));
+  PGNP.Components.Room3S NF1(V = vol, XE = Q1, XW = Q1, YS = Q1) annotation(
+    Placement(visible = true, transformation(origin = {50, 0}, extent = {{-10, -10}, {10, 10}}, rotation = -90)));
+  PGNP.Components.Room3 FF1s(V = vol, XE = Q1, XW = Q1, YS = Q1) annotation(
+    Placement(visible = true, transformation(origin = {-30, 0}, extent = {{-10, -10}, {10, 10}}, rotation = 90)));
+  PGNP.Components.Room3 FF2a(V = vol, XE = Q1, XW = Q1, YS = Q1) annotation(
+    Placement(visible = true, transformation(origin = {-30, -30}, extent = {{-10, -10}, {10, 10}}, rotation = 90)));
+  PGNP.Components.Room3 FF3b(V = vol, XE = Q1, XW = Q1, YS = Q1) annotation(
+    Placement(visible = true, transformation(origin = {-30, 54}, extent = {{-10, -10}, {10, 10}}, rotation = 90)));
+  PGNP.Components.Room3 FF2b(V = vol, XE = Q1, XW = Q1, YS = Q1) annotation(
+    Placement(visible = true, transformation(origin = {-30, 26}, extent = {{-10, -10}, {10, 10}}, rotation = 90)));
+  PGNP.Components.Room3 FF3a(V = vol, XE = Q1, XW = Q1, YS = Q1) annotation(
+    Placement(visible = true, transformation(origin = {-30, -58}, extent = {{-10, -10}, {10, 10}}, rotation = 90)));
+  PGNP.Components.Room3 NF2b(V = vol, XE = Q1, XW = Q1, YS = Q1) annotation(
+    Placement(visible = true, transformation(origin = {50, 26}, extent = {{-10, -10}, {10, 10}}, rotation = -90)));
+  PGNP.Components.Room3 NF3a(V = vol, XE = Q1, XW = Q1, YS = Q1) annotation(
+    Placement(visible = true, transformation(origin = {50, -58}, extent = {{-10, -10}, {10, 10}}, rotation = -90)));
+  PGNP.Components.Room3 NF2a(V = vol, XE = Q1, XW = Q1, YS = Q1) annotation(
+    Placement(visible = true, transformation(origin = {50, -30}, extent = {{-10, -10}, {10, 10}}, rotation = -90)));
+  PGNP.Components.Room3 NF3b(V = vol, XE = Q1, XW = Q1, YS = Q1) annotation(
+    Placement(visible = true, transformation(origin = {50, 54}, extent = {{-10, -10}, {10, 10}}, rotation = -90)));
+  Modelica.Blocks.Sources.Constant kilnFocus(k = 2.25*10^10) annotation(
+    Placement(visible = true, transformation(origin = {18, -16}, extent = {{-8, -8}, {8, 8}}, rotation = 0)));
+  Modelica.Blocks.Sources.Constant kilnEnd(k = 1.15*10^10) annotation(
+    Placement(visible = true, transformation(origin = {12, 68}, extent = {{-8, -8}, {8, 8}}, rotation = 0)));
+  PGNP.Sources.FixedConcentration outdoors(N = 10000e6) annotation(
+    Placement(visible = true, transformation(origin = {-80, -2}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  PGNP.Components.Room3 FF4b(V = vol, XE = Q1, XW = Q1, YS = Q1) annotation(
+    Placement(visible = true, transformation(origin = {-30, 82}, extent = {{-10, -10}, {10, 10}}, rotation = 0)));
+  PGNP.Components.Room3 FF4a(V = vol, XE = Q1, XW = Q1, YS = Q1) annotation(
+    Placement(visible = true, transformation(origin = {-30, -84}, extent = {{-10, 10}, {10, -10}}, rotation = 0)));
+equation
+  connect(FF1s.port_a, FF2a.port_b) annotation(
+    Line(points = {{-30, -10}, {-30, -20}}, color = {191, 0, 0}));
+  connect(FF2a.port_a, FF3a.port_b) annotation(
+    Line(points = {{-30, -40}, {-30, -48}}, color = {191, 0, 0}));
+  connect(FF3b.port_a1, NF3b.port_a1) annotation(
+    Line(points = {{-20, 54}, {40, 54}}, color = {191, 0, 0}));
+  connect(FF2b.port_a1, NF2b.port_a1) annotation(
+    Line(points = {{-20, 26}, {40, 26}}, color = {191, 0, 0}));
+  connect(FF2a.port_a1, NF2a.port_a1) annotation(
+    Line(points = {{-20, -30}, {40, -30}}, color = {191, 0, 0}));
+  connect(FF3a.port_a1, NF3a.port_a1) annotation(
+    Line(points = {{-20, -58}, {40, -58}}, color = {191, 0, 0}));
+  connect(NF4.port_a, NF3a.port_b) annotation(
+    Line(points = {{50, -74.2}, {50, -68.2}}, color = {191, 0, 0}));
+  connect(NF3a.port_a, NF2a.port_b) annotation(
+    Line(points = {{50, -48}, {50, -40}}, color = {191, 0, 0}));
+  connect(NF2b.port_a, NF3b.port_b) annotation(
+    Line(points = {{50, 36}, {50, 44}}, color = {191, 0, 0}));
+  connect(NF1.port_a, NF2b.port_b) annotation(
+    Line(points = {{50, 10}, {50, 16}}, color = {191, 0, 0}));
+  connect(NF1.port_b, NF2a.port_a) annotation(
+    Line(points = {{50, -10}, {50, -20}}, color = {191, 0, 0}));
+  connect(NF1.port_a1, FF1s.port_a1) annotation(
+    Line(points = {{40, 0}, {-20, 0}}, color = {191, 0, 0}));
+  connect(WA.port_b, NF3b.port_a) annotation(
+    Line(points = {{49.8, 72}, {49.8, 64}}, color = {191, 0, 0}));
+  connect(kilnFocus.y, NF1.u) annotation(
+    Line(points = {{27, -16}, {44, -16}, {44, -10}}, color = {0, 0, 127}));
+  connect(FF2b.port_b, FF3b.port_a) annotation(
+    Line(points = {{-29.8, 36}, {-29.8, 44}}, color = {191, 0, 0}));
+  connect(FF2b.port_a, FF1s.port_b) annotation(
+    Line(points = {{-30, 16}, {-30, 10}}, color = {191, 0, 0}));
+  connect(outdoors.port, FF4b.port_a) annotation(
+    Line(points = {{-70, -2}, {-60, -2}, {-60, 82}, {-40, 82}}, color = {191, 0, 0}));
+  connect(FF4b.port_b, WA.port_a) annotation(
+    Line(points = {{-20, 81.8}, {40, 81.8}}, color = {191, 0, 0}));
+  connect(FF4b.port_a1, FF3b.port_b) annotation(
+    Line(points = {{-30, 72}, {-30, 64}}, color = {191, 0, 0}));
+  connect(FF4a.port_a1, FF3a.port_a) annotation(
+    Line(points = {{-30, -74}, {-30, -68}}, color = {191, 0, 0}));
+  connect(FF4a.port_b, NF4.port_b) annotation(
+    Line(points = {{-20, -83.8}, {40, -83.8}}, color = {191, 0, 0}));
+  connect(FF4a.port_a, outdoors.port) annotation(
+    Line(points = {{-40, -84}, {-60, -84}, {-60, -2}, {-70, -2}}, color = {191, 0, 0}));
+  connect(kilnEnd.y, WA.u) annotation(
+    Line(points = {{20, 68}, {44, 68}, {44, 72}}, color = {0, 0, 127}));
+initial equation
+
+protected
+  annotation(
+    Documentation(info = "<html>
+<p>
+This example demonstrates the concentration response of a grid of nine indoor air volumes connected by conducting elements. The nine volumes have the same volume and initial concentration. The volum in the middle of the grid have an industrial process that generates nanoparticles with a pulse function with a period of 3000s (50% the pulse is on on and 50% of the pulse is off). The concentration will rise in the grid (there is no incoming clean air).
+</p>
+<p>
+Simulate for 10000 s and plot the variables<br>
+Room.ParticleCapacitor.C, Room2.ParticleCapacitor.C, Room21.ParticleCapacitor.C, Room211.ParticleCapacitor.C, Room211.ParticleCapacitor.C, Room3.ParticleCapacitor.C, Room31.ParticleCapacitor.C, Room32.ParticleCapacitor.C, Room33.ParticleCapacitor.C   
+</p>
+</html>"),
+    experiment(StopTime = 10000, Interval = 1, StartTime = 0, Tolerance = 1e-06));
+end Saloni;
