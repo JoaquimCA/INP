@@ -1,0 +1,5 @@
+
+loadModel("INP");
+generateHtmlDocumentation("INP");
+quit();
+        
